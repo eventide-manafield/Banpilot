@@ -6,6 +6,10 @@ Set-StrictMode -Version Latest
 if ($PSVersionTable.PSEdition -ne 'Desktop') { throw 'Use Windows PowerShell 5.1.' }
 $kits = Join-Path ${env:ProgramFiles(x86)} 'Windows Kits\10\bin\10.0.26100.0\x64'
 $csc = Join-Path $env:windir 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'
+[xml]$manifest = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'AppxManifest.xml') -Raw
+$packageVersion = [version]$manifest.Package.Identity.Version
+$version = '{0}.{1}.{2}' -f $packageVersion.Major,$packageVersion.Minor,$packageVersion.Build
+$packageName = 'Banpilot-' + $version + '-x64.msix'
 $output = Join-Path $PSScriptRoot ('out\' + [guid]::NewGuid().ToString('N'))
 $payload = Join-Path $output 'payload'
 [IO.Directory]::CreateDirectory((Join-Path $payload 'Assets')) | Out-Null
@@ -44,7 +48,7 @@ if (-not $certificate) {
 }
 if (-not $certificate.HasPrivateKey -or $certificate.NotAfter -le (Get-Date)) { throw 'A valid local signing key is required.' }
 Export-Certificate -Cert $certificate -FilePath (Join-Path $output 'Banpilot.cer') | Out-Null
-$msix = Join-Path $output 'Banpilot-0.2.0-x64.msix'
+$msix = Join-Path $output $packageName
 & (Join-Path $kits 'makeappx.exe') pack /d $payload /p $msix
 if ($LASTEXITCODE -ne 0) { throw 'MSIX packaging failed.' }
 & (Join-Path $kits 'signtool.exe') sign /fd SHA256 /s My /sha1 $certificate.Thumbprint $msix
@@ -52,10 +56,10 @@ if ($LASTEXITCODE -ne 0) { throw 'MSIX signing failed.' }
 $signature = Get-AuthenticodeSignature -LiteralPath $msix
 if (-not $signature.SignerCertificate -or $signature.SignerCertificate.Thumbprint -ne $certificate.Thumbprint) { throw 'Unexpected package signer.' }
 [ordered]@{
-    package=$msix; sha256=(Get-FileHash -LiteralPath $msix).Hash
+    package=$packageName; version=$version; packageVersion=$packageVersion.ToString(); sha256=(Get-FileHash -LiteralPath $msix).Hash
     certificateThumbprint=$certificate.Thumbprint; builtUtc=[DateTime]::UtcNow.ToString('o')
 } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $output 'build.json') -Encoding UTF8
-foreach ($file in @('Install.cmd', 'Install.ps1', 'README.md')) {
+foreach ($file in @('Install.bat', 'Install.cmd', 'Install.ps1', 'INSTALL.txt', 'README.md')) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot $file) -Destination $output
 }
 [IO.File]::WriteAllText((Join-Path $PSScriptRoot 'out\latest.txt'), $output)

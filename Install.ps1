@@ -9,7 +9,8 @@ if ([string]::IsNullOrWhiteSpace($ReleaseDirectory)) { $ReleaseDirectory = $PSSc
 if ($CheckOnly -and $TrustOnly) { throw 'CheckOnly cannot be combined with TrustOnly.' }
 $release = (Resolve-Path -LiteralPath $ReleaseDirectory).Path
 $build = Get-Content -LiteralPath (Join-Path $release 'build.json') -Raw | ConvertFrom-Json
-$package = Join-Path $release 'Banpilot-0.2.0-x64.msix'
+if ($build.package -notmatch '\ABanpilot-\d+\.\d+\.\d+-x64\.msix\z') { throw 'Unexpected package filename.' }
+$package = Join-Path $release $build.package
 $publicCertificate = Join-Path $release 'Banpilot.cer'
 $certificate = New-Object Security.Cryptography.X509Certificates.X509Certificate2($publicCertificate)
 if ($certificate.Subject -ne 'CN=Eventide Banpilot Test' -or $certificate.Thumbprint -ne $build.certificateThumbprint) { throw 'Unexpected app certificate.' }
@@ -40,5 +41,7 @@ if ((Get-AuthenticodeSignature -LiteralPath $package).Status -ne 'Valid') { thro
 Add-AppxPackage -Path $package
 $installed = Get-AppxPackage -Name 'Eventide.Banpilot'
 if (-not $installed -or $installed.Publisher -ne $certificate.Subject) { throw 'App installation was not confirmed.' }
+if ([string]$installed.Version -ne [string]$build.packageVersion) { throw 'Installed version does not match this release.' }
 $installed | Select-Object Name,Version,PackageFamilyName,InstallLocation,Status | Format-List
 Write-Output 'Installed. Select this app in Windows Settings to assign the Copilot key. No boot or driver settings were changed.'
+Write-Output 'Next: open Windows Settings, find the Copilot key setting, then choose a Banpilot app. See INSTALL.txt.'
