@@ -1,0 +1,6 @@
+out/
+*.pfx
+*.p12
+*.key
+*.cer
+*.msix
