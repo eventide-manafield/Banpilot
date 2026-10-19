@@ -41,7 +41,7 @@ Windows 11 x64용 실험 프로젝트입니다. 짧게 누르기, 길게 누르�
 
 ## 설치 및 선택
 
-1. [최신 릴리스](https://github.com/eventide-manafield/Banpilot/releases/latest)에서 `Banpilot-버전-windows-x64.zip`을 내려받아 **모두 압축 해제**하고 `Install.bat`을 더블클릭합니다. 소스 코드 ZIP이 아닌 설치용 ZIP을 선택하십시오. 별도 빌드 도구는 필요하지 않습니다.
+1. [최신 릴리스](https://github.com/eventide-manafield/Banpilot/releases/latest)에서 **`Banpilot-버전-Setup-x64.exe`를 내려받아 더블클릭**합니다. 압축 해제나 별도 빌드 도구가 필요하지 않습니다.
 2. 처음 설치할 때 설치기가 로컬 테스트용 공개 인증서 `CN=Eventide Banpilot Test`를 `LocalMachine\TrustedPeople`에 등록합니다. 관리자 권한이 필요합니다. 완료 메시지를 확인하고 창을 닫습니다.
 3. Windows 설정의 **키보드의 Copilot 키 사용자 지정**에서 사용자 지정 앱을 선택합니다. Windows 버전에 따라 개인 설정 → 텍스트 입력 또는 Bluetooth 및 장치 → 키보드에 있습니다.
 4. **Eventide's Banpilot - 아무 동작 안 함** 또는 **Eventide's Banpilot - Windows 키 한 번 누르기**를 선택합니다.
@@ -51,9 +51,11 @@ Windows 11 x64용 실험 프로젝트입니다. 짧게 누르기, 길게 누르�
 
 설치기는 앱과 인증서를 설치합니다. Copilot 키의 실행 대상은 Windows 설정에서 선택합니다. 앱 목록에 나타나지 않으면 설정 창을 다시 엽니다.
 
-설치와 앱 선택은 한 번만 하면 됩니다. 이후 Copilot 키를 누르면 Windows가 선택한 앱을 실행합니다. `Install.bat`은 기존 `Install.cmd` 설치기를 호출하는 진입점이며, 설치 파일들을 같은 폴더에 유지해야 합니다. 실행 파일만 따로 복사하는 방식으로는 Windows의 앱 선택 목록에 등록되지 않습니다.
+설치와 앱 선택은 한 번만 하면 됩니다. 이후 Copilot 키를 누르면 Windows가 선택한 앱을 실행합니다. Setup EXE에는 MSIX·공개 인증서·설치 스크립트가 내장되어 있으며, 실행 시 임시 폴더에서 설치한 뒤 임시 파일을 정리합니다. 설치 파일을 별도로 다운로드하지 않습니다.
 
-릴리스의 `SHA256SUMS.txt`와 `Get-FileHash .\Banpilot-0.2.0-windows-x64.zip -Algorithm SHA256` 결과를 비교하여 다운로드한 ZIP을 확인할 수 있습니다.
+배치 파일을 선호한다면 `Banpilot-버전-windows-x64.zip`을 **모두 압축 해제**한 뒤 `Install.bat`을 실행할 수도 있습니다. 이 경우 설치 파일들을 같은 폴더에 유지해야 합니다. GitHub가 자동 제공하는 소스 코드 ZIP과는 다른 파일입니다.
+
+릴리스의 `SHA256SUMS.txt`와 `Get-FileHash .\Banpilot-0.2.0-Setup-x64.exe -Algorithm SHA256` 결과를 비교하여 다운로드한 파일을 확인할 수 있습니다.
 
 ### 테스트 인증서
 
@@ -71,13 +73,13 @@ powershell.exe -NoProfile -File .\Build.ps1
 
 `out` 아래 새 폴더에 MSIX, 공개 인증서, 설치기, 해시 및 인증서 지문이 담긴 `build.json`이 생성됩니다. 다른 PC에서 소스를 빌드하면 그 PC의 로컬 테스트 인증서를 생성합니다.
 
-설치용 ZIP 및 SHA-256 파일 생성:
+단일 Setup EXE, 설치용 ZIP 및 SHA-256 파일 생성:
 
 ```powershell
 powershell.exe -NoProfile -File .\Package.ps1
 ```
 
-버전과 MSIX 파일명은 매니페스트에서 결정합니다. ZIP에는 설치에 필요한 파일과 공개 인증서만 포함하며, 개인 키·중간 빌드 파일·로컬 진단 기록은 포함하지 않습니다.
+버전과 MSIX 파일명은 매니페스트에서 결정합니다. Setup EXE도 앱과 같은 인증서로 서명합니다. 배포물에는 설치에 필요한 파일과 공개 인증서만 포함하며, 개인 키·중간 빌드 파일·로컬 진단 기록은 포함하지 않습니다. Setup EXE의 `--check-only` 옵션은 설치 없이 내장 파일의 해시와 서명을 검사합니다.
 
 설치 전 패키지 확인:
 
