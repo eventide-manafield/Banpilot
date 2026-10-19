@@ -14,6 +14,8 @@ $payload = Join-Path $output 'payload'
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'AppxManifest.xml') -Destination $payload
 & $csc /nologo /target:winexe /platform:x64 /optimize+ "/out:$payload\Banpilot.exe" (Join-Path $PSScriptRoot 'Banpilot.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Compilation failed.' }
+& $csc /nologo /target:winexe /platform:x64 /optimize+ "/out:$payload\Banpilot.WindowsKey.exe" (Join-Path $PSScriptRoot 'WindowsKeyTap.cs')
+if ($LASTEXITCODE -ne 0) { throw 'Windows-key app compilation failed.' }
 Add-Type -AssemblyName System.Drawing
 foreach ($entry in @(@('StoreLogo',50),@('Square44x44Logo',44),@('Square150x150Logo',150))) {
     $size = [int]$entry[1]
@@ -42,7 +44,7 @@ if (-not $certificate) {
 }
 if (-not $certificate.HasPrivateKey -or $certificate.NotAfter -le (Get-Date)) { throw 'A valid local signing key is required.' }
 Export-Certificate -Cert $certificate -FilePath (Join-Path $output 'Banpilot.cer') | Out-Null
-$msix = Join-Path $output 'Banpilot-0.1.0-x64.msix'
+$msix = Join-Path $output 'Banpilot-0.2.0-x64.msix'
 & (Join-Path $kits 'makeappx.exe') pack /d $payload /p $msix
 if ($LASTEXITCODE -ne 0) { throw 'MSIX packaging failed.' }
 & (Join-Path $kits 'signtool.exe') sign /fd SHA256 /s My /sha1 $certificate.Thumbprint $msix

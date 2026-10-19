@@ -14,8 +14,11 @@ $resultType = [System.Collections.Generic.IReadOnlyList[Windows.ApplicationModel
 $task = $asTask.MakeGenericMethod($resultType).Invoke($null, @($operation))
 if (-not $task.Wait(10000)) { throw 'App extension discovery timed out.' }
 $extension = @($task.Result | Where-Object { $_.Package.Id.Name -eq 'Eventide.Banpilot' })
-if ($extension.Count -ne 1) { throw 'Copilot provider registration was not discovered.' }
-Write-Output ('Registered provider: ' + $extension[0].DisplayName)
+if ($extension.Count -ne 2) { throw 'Expected two Copilot provider registrations.' }
+foreach ($id in @('Banpilot', 'BanpilotWindowsKey')) {
+    if (@($extension | Where-Object { $_.Id -eq $id }).Count -ne 1) { throw ('Missing provider: ' + $id) }
+}
+$extension | ForEach-Object { Write-Output ('Registered provider: ' + $_.DisplayName) }
 Add-Type -TypeDefinition @'
 using System;
 using System.Runtime.InteropServices;
@@ -26,11 +29,11 @@ interface INoOpActivationManager {
 }
 public static class NoOpActivationCheck {
     [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
-    public static uint Activate(string appId) {
+    public static uint Activate(string appId, string arguments) {
         object instance = Activator.CreateInstance(Type.GetTypeFromCLSID(new Guid("45BA127D-10A8-46EA-8AB7-56EA9078943C")));
         try {
             uint pid;
-            int hr = ((INoOpActivationManager)instance).ActivateApplication(appId, "", 0, out pid);
+            int hr = ((INoOpActivationManager)instance).ActivateApplication(appId, arguments, 0, out pid);
             Marshal.ThrowExceptionForHR(hr);
             return pid;
         } finally { Marshal.ReleaseComObject(instance); }
@@ -41,7 +44,7 @@ $aumid = $package.PackageFamilyName + '!App'
 $results = @(1..5 | ForEach-Object {
     $foreground = [NoOpActivationCheck]::GetForegroundWindow()
     $timer = [Diagnostics.Stopwatch]::StartNew()
-    $activatedProcessId = [NoOpActivationCheck]::Activate($aumid)
+    $activatedProcessId = [NoOpActivationCheck]::Activate($aumid, "")
     $process = Get-Process -Id $activatedProcessId -ErrorAction SilentlyContinue
     if ($process -and -not $process.WaitForExit(5000)) { throw 'Activated app did not exit.' }
     $timer.Stop()
@@ -51,3 +54,27 @@ if (Get-Process -Name Banpilot -ErrorAction SilentlyContinue) { throw 'Unexpecte
 $results | Format-Table
 $results | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $PSScriptRoot 'out\activation-test.json') -Encoding UTF8
 Write-Output ('AUMID: ' + $aumid)
+Write-Output ('Windows-key AUMID: ' + $package.PackageFamilyName + '!WindowsKey')
+# Never emit a Windows-key input from automated installation verification.
+$dryRunId = [NoOpActivationCheck]::Activate(($package.PackageFamilyName + '!WindowsKey'), '--dry-run')
+$dryRun = Get-Process -Id $dryRunId -ErrorAction SilentlyContinue
+if ($dryRun) {
+    if (-not $dryRun.WaitForExit(17000)) { throw 'Windows-key dry run did not exit.' }
+}
+# A fast COM-launched process may exit before Get-Process obtains a handle;
+# its ExitCode can then be null. Start the installed binary with our own handle
+# to check the dry-run result without requesting any actual keyboard input.
+$startInfo = New-Object Diagnostics.ProcessStartInfo
+$startInfo.FileName = Join-Path $package.InstallLocation 'Banpilot.WindowsKey.exe'
+$startInfo.Arguments = '--dry-run'
+$startInfo.UseShellExecute = $false
+$startInfo.CreateNoWindow = $true
+$checkedRun = New-Object Diagnostics.Process
+$checkedRun.StartInfo = $startInfo
+try {
+    if (-not $checkedRun.Start()) { throw 'Could not start installed Windows-key dry run.' }
+    if (-not $checkedRun.WaitForExit(17000)) { throw 'Installed Windows-key dry run did not exit.' }
+    if ($checkedRun.ExitCode -ne 0) { throw ('Windows-key dry run did not pass. Exit code: ' + $checkedRun.ExitCode) }
+} finally { $checkedRun.Dispose() }
+if (Get-Process -Name 'Banpilot.WindowsKey' -ErrorAction SilentlyContinue) { throw 'Unexpected resident Windows-key process.' }
+Write-Output 'Windows-key package activation dry run completed; no key input was requested.'

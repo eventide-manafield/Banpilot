@@ -9,7 +9,7 @@ if ([string]::IsNullOrWhiteSpace($ReleaseDirectory)) { $ReleaseDirectory = $PSSc
 if ($CheckOnly -and $TrustOnly) { throw 'CheckOnly cannot be combined with TrustOnly.' }
 $release = (Resolve-Path -LiteralPath $ReleaseDirectory).Path
 $build = Get-Content -LiteralPath (Join-Path $release 'build.json') -Raw | ConvertFrom-Json
-$package = Join-Path $release 'Banpilot-0.1.0-x64.msix'
+$package = Join-Path $release 'Banpilot-0.2.0-x64.msix'
 $publicCertificate = Join-Path $release 'Banpilot.cer'
 $certificate = New-Object Security.Cryptography.X509Certificates.X509Certificate2($publicCertificate)
 if ($certificate.Subject -ne 'CN=Eventide Banpilot Test' -or $certificate.Thumbprint -ne $build.certificateThumbprint) { throw 'Unexpected app certificate.' }
