@@ -12,7 +12,7 @@ if ($build.version -notmatch '\A\d+\.\d+\.\d+\z' -or $build.package -ne ('Banpil
 & (Join-Path $PSScriptRoot 'Install.ps1') -ReleaseDirectory $release -CheckOnly
 if ($LASTEXITCODE -ne 0) { throw 'Package verification failed.' }
 # Explicit allowlist: no private keys, compiler output or local diagnostics.
-$names = @('Install.bat','Install.cmd','Install.ps1','INSTALL.txt','README.md','build.json','Banpilot.cer',$build.package)
+$names = @('Install.bat','Install.cmd','Install.ps1','INSTALL.txt','README.md','LICENSE','build.json','Banpilot.cer',$build.package)
 $files = @($names | ForEach-Object {
     $path = Join-Path $release $_
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing release file: $_" }

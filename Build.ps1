@@ -16,6 +16,7 @@ $payload = Join-Path $output 'payload'
 [IO.Directory]::CreateDirectory((Join-Path $payload 'Public')) | Out-Null
 [IO.File]::WriteAllText((Join-Path $payload 'Public\provider.txt'), 'Copilot No-op provider')
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'AppxManifest.xml') -Destination $payload
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'LICENSE') -Destination $payload
 & $csc /nologo /target:winexe /platform:x64 /optimize+ "/out:$payload\Banpilot.exe" (Join-Path $PSScriptRoot 'Banpilot.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Compilation failed.' }
 & $csc /nologo /target:winexe /platform:x64 /optimize+ "/out:$payload\Banpilot.WindowsKey.exe" (Join-Path $PSScriptRoot 'WindowsKeyTap.cs')
@@ -59,7 +60,7 @@ if (-not $signature.SignerCertificate -or $signature.SignerCertificate.Thumbprin
     package=$packageName; version=$version; packageVersion=$packageVersion.ToString(); sha256=(Get-FileHash -LiteralPath $msix).Hash
     certificateThumbprint=$certificate.Thumbprint; builtUtc=[DateTime]::UtcNow.ToString('o')
 } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $output 'build.json') -Encoding UTF8
-foreach ($file in @('Install.bat', 'Install.cmd', 'Install.ps1', 'INSTALL.txt', 'README.md')) {
+foreach ($file in @('Install.bat', 'Install.cmd', 'Install.ps1', 'INSTALL.txt', 'README.md', 'LICENSE')) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot $file) -Destination $output
 }
 [IO.File]::WriteAllText((Join-Path $PSScriptRoot 'out\latest.txt'), $output)

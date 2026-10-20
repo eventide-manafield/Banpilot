@@ -132,6 +132,12 @@ powershell.exe -NoProfile -File .\Test.ps1
 2. 설치된 앱에서 **Eventide's Banpilot**을 제거합니다.
 3. 이 테스트 인증서를 더 이상 사용하지 않으면 `certlm.msc`의 **신뢰할 수 있는 사람 → 인증서**에서 `build.json`의 지문과 정확히 일치하는 인증서를 제거합니다. 다른 앱에서도 같은 인증서를 사용하는지 먼저 확인하십시오.
 
+## 라이선스
+
+[MIT License](LICENSE) — Copyright (c) 2026 Eventide (eventide-manafield).
+
+사용·수정·재배포·상업적 이용을 허용합니다. 복사본 또는 소프트웨어의 상당 부분을 배포할 때는 저작권 고지와 라이선스 전문을 함께 포함해야 합니다. 자세한 조건은 LICENSE 파일을 따릅니다.
+
 ## 참고
 
 - [Microsoft Copilot hardware key providers](https://learn.microsoft.com/en-us/windows/apps/develop/windows-integration/microsoft-copilot-key-provider)
