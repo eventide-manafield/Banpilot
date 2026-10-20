@@ -6,6 +6,8 @@
 
 [한국어](#한국어) · [English](#english)
 
+I'm a Korean developer. I wrote this README in Korean, and ChatGPT translated it into English.
+
 ---
 
 ## 한국어
