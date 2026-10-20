@@ -15,3 +15,23 @@ foreach ($app in $apps) {
     if ($app.Extensions.Extension.AppExtension.Name -ne 'com.microsoft.windows.copilotkeyprovider') { throw 'Missing Copilot provider.' }
 }
 Write-Output 'Manifest: two separate Copilot provider app entries; original App identity preserved.'
+
+$resources = @('en-US','ko-KR') | ForEach-Object {
+    '/resource:"' + (Join-Path $PSScriptRoot "Strings\$_\Resources.resw") + '",' + $_ + '.resw'
+}
+$localizationRunner = Join-Path $output 'LocalizationTests.exe'
+& $csc /nologo /target:exe /platform:x64 /main:LocalizationTests "/out:$localizationRunner" $resources (Join-Path $PSScriptRoot 'InstallerText.cs') (Join-Path $PSScriptRoot 'tests\LocalizationTests.cs')
+if ($LASTEXITCODE -ne 0) { throw 'Localization test compilation failed.' }
+& $localizationRunner
+if ($LASTEXITCODE -ne 0) { throw 'Localization tests failed.' }
+[xml]$english = Get-Content -Raw -Encoding UTF8 (Join-Path $PSScriptRoot 'Strings\en-US\Resources.resw')
+[xml]$korean = Get-Content -Raw -Encoding UTF8 (Join-Path $PSScriptRoot 'Strings\ko-KR\Resources.resw')
+if (Compare-Object @($english.root.data.name | Sort-Object) @($korean.root.data.name | Sort-Object)) { throw 'Language resource keys differ.' }
+foreach ($language in @($english,$korean)) {
+    if (@($language.root.data | Group-Object name | Where-Object Count -ne 1).Count) { throw 'Duplicate resource key.' }
+    foreach ($entry in $language.root.data) { if ([string]::IsNullOrWhiteSpace([string]$entry.value)) { throw 'Empty translated string.' } }
+}
+foreach ($reference in [regex]::Matches($manifest.OuterXml, 'ms-resource:([A-Za-z]+)')) {
+    if ($reference.Groups[1].Value -notin $english.root.data.name) { throw 'Unresolved manifest string.' }
+}
+Write-Output 'Localization: matching translation keys and all manifest resource references verified.'

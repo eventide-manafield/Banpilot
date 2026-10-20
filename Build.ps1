@@ -17,6 +17,7 @@ $payload = Join-Path $output 'payload'
 [IO.File]::WriteAllText((Join-Path $payload 'Public\provider.txt'), 'Copilot No-op provider')
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'AppxManifest.xml') -Destination $payload
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'LICENSE') -Destination $payload
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'Strings') -Destination $payload -Recurse
 & $csc /nologo /target:winexe /platform:x64 /optimize+ "/out:$payload\Banpilot.exe" (Join-Path $PSScriptRoot 'Banpilot.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Compilation failed.' }
 & $csc /nologo /target:winexe /platform:x64 /optimize+ "/out:$payload\Banpilot.WindowsKey.exe" (Join-Path $PSScriptRoot 'WindowsKeyTap.cs')
@@ -33,6 +34,17 @@ foreach ($entry in @(@('StoreLogo',50),@('Square44x44Logo',44),@('Square150x150L
         $bitmap.Save((Join-Path $payload ('Assets\' + $entry[0] + '.png')))
     } finally { $pen.Dispose(); $graphics.Dispose(); $bitmap.Dispose() }
 }
+# Generate shell/app-extension strings with English as the fallback language.
+$makePri = Join-Path $kits 'makepri.exe'
+$priConfig = Join-Path $output 'priconfig.xml'
+& $makePri createconfig /cf $priConfig /dq en-US /pv 10.0.0 /o *> (Join-Path $output 'makepri-config.log')
+if ($LASTEXITCODE -ne 0) { throw 'PRI configuration failed. See makepri-config.log.' }
+[xml]$config = Get-Content -LiteralPath $priConfig -Raw
+# Ship both languages in one MSIX; do not generate separate resource packages.
+$config.resources.packaging.RemoveAll()
+$config.Save($priConfig)
+& $makePri new /pr $payload /cf $priConfig /of (Join-Path $payload 'resources.pri') /in Eventide.Banpilot /o *> (Join-Path $output 'makepri-build.log')
+if ($LASTEXITCODE -ne 0) { throw 'PRI generation failed. See makepri-build.log.' }
 $savedThumb = Join-Path $PSScriptRoot 'out\certificate-thumbprint.txt'
 $certificate = $null
 if (Test-Path -LiteralPath $savedThumb) {
@@ -62,6 +74,9 @@ if (-not $signature.SignerCertificate -or $signature.SignerCertificate.Thumbprin
 } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $output 'build.json') -Encoding UTF8
 foreach ($file in @('Install.bat', 'Install.cmd', 'Install.ps1', 'INSTALL.txt', 'README.md', 'LICENSE')) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot $file) -Destination $output
+}
+foreach ($language in @('en-US','ko-KR')) {
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot "Strings\$language\Resources.resw") -Destination (Join-Path $output ($language + '.resw'))
 }
 [IO.File]::WriteAllText((Join-Path $PSScriptRoot 'out\latest.txt'), $output)
 Write-Output "Built (not installed): $output"

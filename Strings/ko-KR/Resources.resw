@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="PackageDescription" xml:space="preserve"><value>Copilot 키의 무동작 또는 Windows 키 단독 입력을 선택합니다.</value></data>
+  <data name="NoOpDisplayName" xml:space="preserve"><value>Eventide's Banpilot - 아무 동작 안 함</value></data>
+  <data name="NoOpDescription" xml:space="preserve"><value>창을 열지 않고 바로 종료합니다.</value></data>
+  <data name="WindowsKeyDisplayName" xml:space="preserve"><value>Eventide's Banpilot - Windows 키 한 번 누르기</value></data>
+  <data name="WindowsKeyDescription" xml:space="preserve"><value>원래 키를 놓은 뒤 오른쪽 Windows 키를 한 번 누르고 해제합니다.</value></data>
+  <data name="SetupTitle" xml:space="preserve"><value>Eventide's Banpilot 설치 프로그램</value></data>
+  <data name="Checking" xml:space="preserve"><value>설치 파일을 검사하고 있어요. 앱을 설치하지 않습니다.</value></data>
+  <data name="Installing" xml:space="preserve"><value>설치 중입니다. 처음 설치할 때 인증서 등록을 위한 관리자 권한 요청이 나타날 수 있어요.</value></data>
+  <data name="Installed" xml:space="preserve"><value>설치 완료! Windows 설정에서 'Copilot 키'를 검색한 뒤 원하는 Banpilot 앱을 선택해 주세요.</value></data>
+  <data name="RunOnce" xml:space="preserve"><value>설치와 앱 선택은 한 번만 하면 됩니다.</value></data>
+  <data name="Failed" xml:space="preserve"><value>설치를 완료하지 못했습니다. 위 오류를 확인해 주세요.</value></data>
+  <data name="ErrorPrefix" xml:space="preserve"><value>설치 오류: </value></data>
+  <data name="ClosePrompt" xml:space="preserve"><value>Enter를 누르면 창을 닫습니다.</value></data>
+  <data name="UnexpectedResources" xml:space="preserve"><value>설치 프로그램의 내장 파일 구성이 올바르지 않습니다.</value></data>
+  <data name="MultiplePackages" xml:space="preserve"><value>앱 패키지가 여러 개 발견됐습니다.</value></data>
+  <data name="MissingPackage" xml:space="preserve"><value>앱 패키지가 없습니다.</value></data>
+  <data name="TempExists" xml:space="preserve"><value>임시 폴더가 이미 존재합니다.</value></data>
+  <data name="InvalidSwitches" xml:space="preserve"><value>CheckOnly와 TrustOnly를 함께 사용할 수 없습니다.</value></data>
+  <data name="UnexpectedFilename" xml:space="preserve"><value>앱 패키지 파일명이 올바르지 않습니다.</value></data>
+  <data name="UnexpectedCertificate" xml:space="preserve"><value>예상한 앱 인증서와 일치하지 않습니다.</value></data>
+  <data name="HashMismatch" xml:space="preserve"><value>앱 패키지의 해시가 일치하지 않습니다.</value></data>
+  <data name="UnexpectedSigner" xml:space="preserve"><value>예상한 패키지 서명자와 일치하지 않습니다.</value></data>
+  <data name="TrustFailed" xml:space="preserve"><value>앱 인증서 신뢰 등록을 완료하지 못했습니다.</value></data>
+  <data name="InvalidSignature" xml:space="preserve"><value>인증서 등록 후에도 패키지 서명이 유효하지 않습니다.</value></data>
+  <data name="InstallNotConfirmed" xml:space="preserve"><value>앱 설치를 확인하지 못했습니다.</value></data>
+  <data name="VersionMismatch" xml:space="preserve"><value>설치된 버전이 이 배포본과 일치하지 않습니다.</value></data>
+</root>

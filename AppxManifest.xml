@@ -4,21 +4,21 @@
          xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
          xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
          IgnorableNamespaces="uap uap3 rescap">
-  <Identity Name="Eventide.Banpilot" Publisher="CN=Eventide Banpilot Test" Version="0.2.1.0" ProcessorArchitecture="x64" />
+  <Identity Name="Eventide.Banpilot" Publisher="CN=Eventide Banpilot Test" Version="0.2.2.0" ProcessorArchitecture="x64" />
   <Properties>
     <DisplayName>Eventide's Banpilot</DisplayName>
     <PublisherDisplayName>Eventide</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
-    <Description>Copilot 키의 무동작 또는 Windows 키 단독 입력을 선택합니다.</Description>
+    <Description>ms-resource:PackageDescription</Description>
   </Properties>
   <Dependencies>
     <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.22621.0" MaxVersionTested="10.0.26200.0" />
   </Dependencies>
-  <Resources><Resource Language="ko-KR" /><Resource Language="en-US" /></Resources>
+  <Resources><Resource Language="en-US" /><Resource Language="ko-KR" /></Resources>
   <Applications>
     <Application Id="App" Executable="Banpilot.exe" EntryPoint="Windows.FullTrustApplication">
-      <uap:VisualElements DisplayName="Eventide's Banpilot - 아무 동작 안 함"
-                          Description="창을 열지 않고 바로 종료합니다. Opens no window and exits immediately."
+      <uap:VisualElements DisplayName="ms-resource:NoOpDisplayName"
+                          Description="ms-resource:NoOpDescription"
                           BackgroundColor="transparent"
                           Square150x150Logo="Assets\Square150x150Logo.png"
                           Square44x44Logo="Assets\Square44x44Logo.png" />
@@ -26,15 +26,15 @@
         <uap3:Extension Category="windows.appExtension">
           <uap3:AppExtension Name="com.microsoft.windows.copilotkeyprovider"
                              Id="Banpilot"
-                             DisplayName="Eventide's Banpilot - 아무 동작 안 함"
-                             Description="창을 열지 않고 바로 종료합니다."
+                             DisplayName="ms-resource:NoOpDisplayName"
+                             Description="ms-resource:NoOpDescription"
                              PublicFolder="Public" />
         </uap3:Extension>
       </Extensions>
     </Application>
     <Application Id="WindowsKey" Executable="Banpilot.WindowsKey.exe" EntryPoint="Windows.FullTrustApplication">
-      <uap:VisualElements DisplayName="Eventide's Banpilot - Windows 키 한 번 누르기"
-                          Description="키를 놓은 뒤 오른쪽 Windows 키를 한 번 누르고 종료합니다."
+      <uap:VisualElements DisplayName="ms-resource:WindowsKeyDisplayName"
+                          Description="ms-resource:WindowsKeyDescription"
                           BackgroundColor="transparent"
                           Square150x150Logo="Assets\Square150x150Logo.png"
                           Square44x44Logo="Assets\Square44x44Logo.png" />
@@ -42,8 +42,8 @@
         <uap3:Extension Category="windows.appExtension">
           <uap3:AppExtension Name="com.microsoft.windows.copilotkeyprovider"
                              Id="BanpilotWindowsKey"
-                             DisplayName="Eventide's Banpilot - Windows 키 한 번 누르기"
-                             Description="오른쪽 Windows 키의 누름과 해제를 한 번 전송합니다."
+                             DisplayName="ms-resource:WindowsKeyDisplayName"
+                             Description="ms-resource:WindowsKeyDescription"
                              PublicFolder="Public" />
         </uap3:Extension>
       </Extensions>

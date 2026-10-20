@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="PackageDescription" xml:space="preserve"><value>Choose no action or a single Windows key press for the Copilot key.</value></data>
+  <data name="NoOpDisplayName" xml:space="preserve"><value>Eventide's Banpilot - Do nothing</value></data>
+  <data name="NoOpDescription" xml:space="preserve"><value>Opens no window and exits immediately.</value></data>
+  <data name="WindowsKeyDisplayName" xml:space="preserve"><value>Eventide's Banpilot - Press Windows key once</value></data>
+  <data name="WindowsKeyDescription" xml:space="preserve"><value>Presses and releases the right Windows key once after you release the original keys.</value></data>
+  <data name="SetupTitle" xml:space="preserve"><value>Eventide's Banpilot Installer</value></data>
+  <data name="Checking" xml:space="preserve"><value>Checking installation files. No app will be installed.</value></data>
+  <data name="Installing" xml:space="preserve"><value>Installing. The first installation may request administrator permission to trust the certificate.</value></data>
+  <data name="Installed" xml:space="preserve"><value>Installation complete! Search for 'Copilot key' in Windows Settings and select a Banpilot app.</value></data>
+  <data name="RunOnce" xml:space="preserve"><value>You only need to install and select the app once.</value></data>
+  <data name="Failed" xml:space="preserve"><value>Installation could not be completed. Check the error above.</value></data>
+  <data name="ErrorPrefix" xml:space="preserve"><value>Installation error: </value></data>
+  <data name="ClosePrompt" xml:space="preserve"><value>Press Enter to close this window.</value></data>
+  <data name="UnexpectedResources" xml:space="preserve"><value>Unexpected installer resources.</value></data>
+  <data name="MultiplePackages" xml:space="preserve"><value>Multiple app packages were found.</value></data>
+  <data name="MissingPackage" xml:space="preserve"><value>The app package is missing.</value></data>
+  <data name="TempExists" xml:space="preserve"><value>The temporary directory already exists.</value></data>
+  <data name="InvalidSwitches" xml:space="preserve"><value>CheckOnly cannot be combined with TrustOnly.</value></data>
+  <data name="UnexpectedFilename" xml:space="preserve"><value>Unexpected package filename.</value></data>
+  <data name="UnexpectedCertificate" xml:space="preserve"><value>Unexpected app certificate.</value></data>
+  <data name="HashMismatch" xml:space="preserve"><value>Package hash mismatch.</value></data>
+  <data name="UnexpectedSigner" xml:space="preserve"><value>Unexpected package signer.</value></data>
+  <data name="TrustFailed" xml:space="preserve"><value>App certificate trust was not completed.</value></data>
+  <data name="InvalidSignature" xml:space="preserve"><value>Package signature is not valid after trust installation.</value></data>
+  <data name="InstallNotConfirmed" xml:space="preserve"><value>App installation was not confirmed.</value></data>
+  <data name="VersionMismatch" xml:space="preserve"><value>Installed version does not match this release.</value></data>
+</root>

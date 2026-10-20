@@ -1,4 +1,7 @@
-Eventide's Banpilot 설치 안내
+Eventide's Banpilot 설치 안내 / Installation guide
+
+한국어 안내 다음에 English instructions가 있습니다.
+English instructions follow the Korean section.
 
 라이선스: MIT + Commons Clause 1.0
 개인·회사 업무 사용은 허용합니다. 프로그램 기능에서 가치가 전부 또는 상당 부분
@@ -13,7 +16,7 @@ Eventide's Banpilot 설치 안내
 1. ZIP 파일을 모두 압축 해제합니다. ZIP 안에서 바로 실행하지 마세요.
 2. 압축을 푼 폴더의 Install.bat을 더블클릭합니다.
 3. 처음 설치하는 PC에서는 인증서 등록을 위한 관리자 권한 요청이 나타납니다.
-4. Installed 메시지가 나오면 설치가 완료된 것입니다.
+4. 설치 완료 메시지가 나오면 설치가 완료된 것입니다.
 5. Windows 설정에서 'Copilot 키'를 검색하고 사용자 지정 앱 목록을 엽니다.
 6. 다음 중 하나를 선택합니다.
    - Eventide's Banpilot - 아무 동작 안 함
@@ -37,3 +40,46 @@ Windows 키 모드는 원래 키에서 손을 뗀 뒤 RWindows를 한 번 누릅
 
 프로젝트: https://github.com/eventide-manafield/Banpilot
 후원: https://buymeacoffee.com/manafield
+
+--- English ---
+
+License: MIT + Commons Clause 1.0
+Personal use and use at work are allowed. Paid products or services whose value
+derives entirely or substantially from the software's functionality are restricted
+under the Commons Clause definition of Sell. See LICENSE for the full terms.
+
+Easiest installation: double-click Banpilot-VERSION-Setup-x64.exe from the release.
+The required files are embedded; no manual extraction is needed.
+
+If you downloaded the installation ZIP instead:
+
+1. Extract the entire ZIP. Do not run the installer from inside the ZIP.
+2. Double-click Install.bat in the extracted folder.
+3. On first installation, an administrator prompt appears to trust the certificate.
+4. Wait for the installation-complete message.
+5. Search Windows Settings for 'Copilot key' and open the custom app picker.
+6. Select either:
+   - Eventide's Banpilot - Do nothing
+   - Eventide's Banpilot - Press Windows key once
+
+Installation and app selection are only needed once. Windows launches the selected
+app when you press the key, and the app exits after performing its action.
+
+Requires Windows 11 x64 with Copilot key app customization support.
+Windows-key mode sends one RWindows press after the original keys are released.
+It does not hold down the Windows modifier while you hold the physical key.
+
+Installer messages use Korean for a Korean Windows UI language, English otherwise.
+The app picker uses Windows' preferred-language matching with English as fallback.
+Windows may select Korean if it is included among your preferred languages.
+
+This release uses a self-signed test certificate. The installer registers the public
+certificate in LocalMachine\TrustedPeople. Windows may warn because this installer
+does not have the reputation of a commercially certified installer. Follow your
+organization's policies if installation is blocked. No private key is distributed.
+
+If installation fails, read the error message before closing the window.
+See 'Uninstall and restore' in README.md for app and certificate removal.
+
+Project: https://github.com/eventide-manafield/Banpilot
+Support: https://buymeacoffee.com/manafield

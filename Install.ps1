@@ -1,22 +1,29 @@
 ﻿#requires -Version 5.1
 [CmdletBinding()]
-param([string]$ReleaseDirectory, [switch]$TrustOnly, [switch]$CheckOnly)
+param([string]$ReleaseDirectory, [switch]$TrustOnly, [switch]$CheckOnly, [switch]$PauseOnExit)
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
+[Console]::OutputEncoding = New-Object Text.UTF8Encoding($false)
+$messages = @{}
+function Get-Text([string]$Key) { return $messages[$Key] }
+try {
 # Windows PowerShell 5.1 can evaluate advanced-script parameter defaults before
 # PSScriptRoot is populated. Resolve the default in the script body instead.
 if ([string]::IsNullOrWhiteSpace($ReleaseDirectory)) { $ReleaseDirectory = $PSScriptRoot }
-if ($CheckOnly -and $TrustOnly) { throw 'CheckOnly cannot be combined with TrustOnly.' }
 $release = (Resolve-Path -LiteralPath $ReleaseDirectory).Path
+$language = if ([Globalization.CultureInfo]::CurrentUICulture.TwoLetterISOLanguageName -eq 'ko') { 'ko-KR' } else { 'en-US' }
+[xml]$strings = Get-Content -LiteralPath (Join-Path $release ($language + '.resw')) -Raw -Encoding UTF8
+foreach ($entry in $strings.root.data) { $messages[$entry.name] = [string]$entry.value }
+if ($CheckOnly -and $TrustOnly) { throw (Get-Text 'InvalidSwitches') }
 $build = Get-Content -LiteralPath (Join-Path $release 'build.json') -Raw | ConvertFrom-Json
-if ($build.package -notmatch '\ABanpilot-\d+\.\d+\.\d+-x64\.msix\z') { throw 'Unexpected package filename.' }
+if ($build.package -notmatch '\ABanpilot-\d+\.\d+\.\d+-x64\.msix\z') { throw (Get-Text 'UnexpectedFilename') }
 $package = Join-Path $release $build.package
 $publicCertificate = Join-Path $release 'Banpilot.cer'
 $certificate = New-Object Security.Cryptography.X509Certificates.X509Certificate2($publicCertificate)
-if ($certificate.Subject -ne 'CN=Eventide Banpilot Test' -or $certificate.Thumbprint -ne $build.certificateThumbprint) { throw 'Unexpected app certificate.' }
-if ((Get-FileHash -LiteralPath $package).Hash -ne $build.sha256) { throw 'Package hash mismatch.' }
+if ($certificate.Subject -ne 'CN=Eventide Banpilot Test' -or $certificate.Thumbprint -ne $build.certificateThumbprint) { throw (Get-Text 'UnexpectedCertificate') }
+if ((Get-FileHash -LiteralPath $package).Hash -ne $build.sha256) { throw (Get-Text 'HashMismatch') }
 $signature = Get-AuthenticodeSignature -LiteralPath $package
-if (-not $signature.SignerCertificate -or $signature.SignerCertificate.Thumbprint -ne $certificate.Thumbprint) { throw 'Unexpected package signer.' }
+if (-not $signature.SignerCertificate -or $signature.SignerCertificate.Thumbprint -ne $certificate.Thumbprint) { throw (Get-Text 'UnexpectedSigner') }
 $trustPath = 'Cert:\LocalMachine\TrustedPeople\' + $certificate.Thumbprint
 if ($CheckOnly) {
     [pscustomobject]@{ releaseDirectory=$release; packageHashVerified=$true; certificateThumbprint=$certificate.Thumbprint; certificateTrusted=(Test-Path -LiteralPath $trustPath); signatureStatus=[string]$signature.Status } | ConvertTo-Json
@@ -35,13 +42,25 @@ if (-not (Test-Path -LiteralPath $trustPath)) {
     $process = Start-Process -FilePath (Join-Path $env:windir 'System32\WindowsPowerShell\v1.0\powershell.exe') `
         -Verb RunAs -WindowStyle Hidden -ArgumentList $arguments -PassThru
     $process.WaitForExit()
-    if ($process.ExitCode -ne 0 -or -not (Test-Path -LiteralPath $trustPath)) { throw 'App certificate trust was not completed.' }
+    if ($process.ExitCode -ne 0 -or -not (Test-Path -LiteralPath $trustPath)) { throw (Get-Text 'TrustFailed') }
 }
-if ((Get-AuthenticodeSignature -LiteralPath $package).Status -ne 'Valid') { throw 'Package signature is not valid after trust installation.' }
+if ((Get-AuthenticodeSignature -LiteralPath $package).Status -ne 'Valid') { throw (Get-Text 'InvalidSignature') }
 Add-AppxPackage -Path $package
 $installed = Get-AppxPackage -Name 'Eventide.Banpilot'
-if (-not $installed -or $installed.Publisher -ne $certificate.Subject) { throw 'App installation was not confirmed.' }
-if ([string]$installed.Version -ne [string]$build.packageVersion) { throw 'Installed version does not match this release.' }
+if (-not $installed -or $installed.Publisher -ne $certificate.Subject) { throw (Get-Text 'InstallNotConfirmed') }
+if ([string]$installed.Version -ne [string]$build.packageVersion) { throw (Get-Text 'VersionMismatch') }
 $installed | Select-Object Name,Version,PackageFamilyName,InstallLocation,Status | Format-List
-Write-Output 'Installed. Select this app in Windows Settings to assign the Copilot key. No boot or driver settings were changed.'
-Write-Output 'Next: open Windows Settings, find the Copilot key setting, then choose a Banpilot app. See INSTALL.txt.'
+Write-Output (Get-Text 'Installed')
+Write-Output ('  ' + (Get-Text 'NoOpDisplayName'))
+Write-Output ('  ' + (Get-Text 'WindowsKeyDisplayName'))
+} catch {
+    $prefix = if ($messages.ContainsKey('ErrorPrefix')) { Get-Text 'ErrorPrefix' } else { 'Installation error: ' }
+    Write-Host ($prefix + $_.Exception.Message) -ForegroundColor Red
+    exit 1
+} finally {
+    if ($PauseOnExit) {
+        $prompt = if ($messages.ContainsKey('ClosePrompt')) { Get-Text 'ClosePrompt' } else { 'Press Enter to close this window.' }
+        Write-Host $prompt
+        [void][Console]::ReadLine()
+    }
+}
