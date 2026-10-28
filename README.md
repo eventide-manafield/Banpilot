@@ -86,7 +86,7 @@ Store 버전은 별도의 테스트 인증서 등록이 필요하지 않습니�
 
 릴리스의 `SHA256SUMS.txt`와 `Get-FileHash .\Banpilot-0.2.2-Setup-x64.exe -Algorithm SHA256` 결과를 비교하여 다운로드한 파일을 확인할 수 있습니다.
 
-#### 테스트 인증서
+#### GitHub 배포본의 테스트 인증서 — Store 설치에는 해당 없음
 
 이 패키지는 자체 서명된 로컬 테스트 빌드입니다. 인증서 신뢰 등록은 앱을 종료한 후에도 남으며, 같은 인증서로 서명한 다른 코드의 신뢰 판단에도 영향을 줄 수 있습니다. 앱의 안전성을 외부 기관이 보증하는 것은 아닙니다.
 
@@ -257,7 +257,7 @@ For a batch installer, download **`Banpilot-VERSION-windows-x64.zip`**, extract 
 
 Compare the release's `SHA256SUMS.txt` with the output of `Get-FileHash .\Banpilot-0.2.2-Setup-x64.exe -Algorithm SHA256` to verify your download; substitute your downloaded version's filename.
 
-#### Test certificate
+#### GitHub build test certificate — not applicable to Store installation
 
 This package is a self-signed local test build. Certificate trust remains after the app exits and may affect trust decisions for other code signed with the same certificate. An external authority has not certified the app's safety.
 
