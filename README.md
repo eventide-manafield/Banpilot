@@ -1,6 +1,6 @@
 # Eventide's Banpilot
 
-[다운로드 · Releases](https://github.com/eventide-manafield/Banpilot/releases/latest)
+[Microsoft Store에서 다운로드 · Get it from Microsoft Store](https://apps.microsoft.com/detail/9PM6VH0TLGPQ)
 
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-Support_Manafield-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=000000)](https://buymeacoffee.com/manafield)
 
@@ -23,7 +23,7 @@ I'm a Korean developer. I wrote this README in Korean, and ChatGPT translated it
 Copilot 키를 눌렀을 때 **아무 동작 안 함** 또는 **Windows 키 한 번 누르기**를 선택하는 작은 Windows 앱입니다.
 Windows의 Copilot 키 사용자 지정에서 원하는 Banpilot 항목을 실행 대상으로 선택합니다.
 
-현재 소스의 버전은 **0.2.2**입니다. 한국어·영어 표시와 설치기 안내를 추가했습니다. 공개된 설치 파일의 버전은 상단 릴리스 링크에서 확인하세요.
+현재 소스의 버전은 **0.2.2**입니다. 한국어·영어 표시와 설치기 안내를 추가했습니다. [Microsoft Store](https://apps.microsoft.com/detail/9PM6VH0TLGPQ)에서 설치할 수 있습니다.
 
 같은 패키지에 두 앱을 등록하는 방식입니다. 시스템의 최상위 선택지를 추가하는 것이 아니라 **앱 열기 → 앱 선택** 목록에 두 항목이 표시됩니다. 로컬 Windows 11 25H2 PC에서 두 항목 표시를 확인했습니다.
 
@@ -58,6 +58,17 @@ Windows 11 x64용 실험 프로젝트입니다. 짧게 누르기, 길게 누르�
 관리자 권한 앱, 보호된 화면, 게임 등에서는 입력 합성이 제한될 수 있습니다. 키 상태 확인과 입력 전송 사이의 매우 짧은 경합, 프로세스 강제 종료까지 완전히 해결했다고 보장하지 않습니다. 앱을 직접 실행해도 해당 모드의 동작을 수행합니다.
 
 ### 설치 및 선택
+
+1. [Microsoft Store의 Banpilot](https://apps.microsoft.com/detail/9PM6VH0TLGPQ) 페이지에서 설치합니다.
+2. Windows 설정에서 **Copilot 키**를 검색하고 사용자 지정 앱 목록을 엽니다.
+3. **Eventide's Banpilot - 아무 동작 안 함** 또는 **Eventide's Banpilot - Windows 키 한 번 누르기**를 선택합니다.
+4. 무동작 모드는 창이 뜨지 않는지, Windows 키 모드는 손을 뗀 뒤 시작 메뉴가 한 번 열리는지 확인합니다. 목록에 나타나지 않으면 설정 창을 다시 엽니다.
+
+Store 버전은 별도의 테스트 인증서 등록이 필요하지 않습니다. 기존 GitHub 배포본과 패키지 식별자가 달라 별도 앱으로 설치되므로, GitHub 버전에서 옮겼다면 Store 버전의 항목을 다시 선택하세요.
+
+#### GitHub 배포본으로 설치하는 경우
+
+아래는 Store 대신 자체 서명된 GitHub 배포본을 사용하는 경우의 안내입니다.
 
 1. [최신 릴리스](https://github.com/eventide-manafield/Banpilot/releases/latest)에서 **`Banpilot-버전-Setup-x64.exe`를 내려받아 더블클릭**합니다. 압축 해제나 별도 빌드 도구가 필요하지 않습니다.
 2. 처음 설치할 때 설치기가 로컬 테스트용 공개 인증서 `CN=Eventide Banpilot Test`를 `LocalMachine\TrustedPeople`에 등록합니다. 관리자 권한이 필요합니다. 완료 메시지를 확인하고 창을 닫습니다.
@@ -146,7 +157,7 @@ powershell.exe -NoProfile -File .\Test.ps1
 
 1. Windows 설정에서 Copilot 키의 실행 대상을 원하는 앱으로 다시 선택합니다.
 2. 설치된 앱에서 **Eventide's Banpilot**을 제거합니다.
-3. 이 테스트 인증서를 더 이상 사용하지 않으면 `certlm.msc`의 **신뢰할 수 있는 사람 → 인증서**에서 `build.json`의 지문과 정확히 일치하는 인증서를 제거합니다. 다른 앱에서도 같은 인증서를 사용하는지 먼저 확인하십시오.
+3. GitHub 배포본의 테스트 인증서를 등록했던 경우, 더 이상 사용하지 않으면 `certlm.msc`의 **신뢰할 수 있는 사람 → 인증서**에서 `build.json`의 지문과 정확히 일치하는 인증서를 제거합니다. 다른 앱에서도 같은 인증서를 사용하는지 먼저 확인하십시오. Store로만 설치했다면 이 단계는 필요하지 않습니다.
 
 ### 라이선스
 
@@ -183,7 +194,7 @@ powershell.exe -NoProfile -File .\Test.ps1
 
 Banpilot is a small Windows app that lets you choose **Do nothing** or **Press Windows key once** when you press the Copilot key. Select the desired Banpilot entry in Windows' Copilot key customization setting.
 
-The current source version is **0.2.2**, adding Korean and English labels and installer messages. Check the release link at the top for the version of the published installers.
+The current source version is **0.2.2**, adding Korean and English labels and installer messages. Banpilot is available from the [Microsoft Store](https://apps.microsoft.com/detail/9PM6VH0TLGPQ).
 
 The package registers two apps. They appear under **Open an app → Select an app**, rather than adding new top-level Windows settings options. Both entries were verified on a local Windows 11 25H2 PC.
 
@@ -218,6 +229,17 @@ This is an experimental Windows 11 x64 project. Test short presses, long presses
 Input synthesis may be restricted in elevated apps, protected screens, and games. It does not guarantee protection against the short race between checking key state and sending input, or against forced process termination. Launching either app directly also performs that app's behavior.
 
 ### Install and select
+
+1. Install Banpilot from its [Microsoft Store page](https://apps.microsoft.com/detail/9PM6VH0TLGPQ).
+2. Search Windows Settings for **Copilot key** and open the custom app picker.
+3. Select **Eventide's Banpilot - Do nothing** or **Eventide's Banpilot - Press Windows key once**. The names appear in Korean when Windows selects Korean resources.
+4. Check that no window opens in no-action mode, or that Start opens once after you release the key in Windows-key mode. Reopen Settings if the entries do not appear.
+
+The Store version does not require registering a separate test certificate. It has a different package identity from the GitHub build and installs as a separate app. If you are switching from the GitHub version, select the Store version's entry again.
+
+#### Installing the GitHub build instead
+
+The following instructions apply to the self-signed GitHub build as an alternative to the Store version.
 
 1. Download **`Banpilot-VERSION-Setup-x64.exe`** from the [latest release](https://github.com/eventide-manafield/Banpilot/releases/latest) and double-click it. No manual extraction or build tools are needed.
 2. On first installation, the installer registers the local test certificate `CN=Eventide Banpilot Test` in `LocalMachine\TrustedPeople`. This requires administrator permission. Read the completion message before closing the window.
@@ -306,7 +328,7 @@ The following was checked on a local Windows 11 25H2 x64 PC on 2026-10-19:
 
 1. In Windows Settings, change the Copilot key target to your preferred app.
 2. Uninstall **Eventide's Banpilot** from Installed apps.
-3. If you no longer use the test certificate, open `certlm.msc` and remove the certificate in **Trusted People → Certificates** whose thumbprint exactly matches `build.json`. First check whether any other app uses that certificate.
+3. If you registered the GitHub build's test certificate and no longer use it, open `certlm.msc` and remove the certificate in **Trusted People → Certificates** whose thumbprint exactly matches `build.json`. First check whether any other app uses that certificate. Skip this step if you only installed from the Store.
 
 ### License
 
